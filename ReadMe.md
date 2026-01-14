@@ -7,9 +7,9 @@
 ## 📊 Executive Summary
 This project investigates **"Silent Failure"** in medical AI models due to demographic shifts (Population Drift). Using the **Pima Indians Diabetes Dataset**, it compares two anomaly detection algorithms: **Isolation Forest** vs. **One-Class SVM (OCSVM)**.
 
-> **[📄 View Project Presentation Slides (PDF)](docs/Drift_Detection_Presentation_Slides.pdf)**
+> **[View Project Presentation Slides (PDF)](docs/Drift_Detection_Presentation_Slides.pdf)**
 
-## 🔬 Key Findings (The "Trade-Off")
+## Key Findings (The "Trade-Off")
 The experiments revealed that no single algorithm is safe for all scenarios:
 
 1.  **Gradual Drift (Biological Shift):**
@@ -22,7 +22,7 @@ The experiments revealed that no single algorithm is safe for all scenarios:
     * **Result:** Detected shock with **2.92x higher sensitivity** than Isolation Forest.
     * *Why:* Distance-based boundaries are more sensitive to sudden data displacement.
 
-## 📂 Repository Structure
+## Repository Structure
 * **`data/`**: Processed Pima Indians Diabetes Dataset.
 * **`notebooks/`**:
     * `01_Baseline_EDA.ipynb`: Stats & Setup.
@@ -30,7 +30,7 @@ The experiments revealed that no single algorithm is safe for all scenarios:
     * `04-05`: Abrupt Drift Experiments (IsoForest vs OCSVM).
 * **`docs/`**: Presentation Slides.
 
-## 🚀 Quick Start
+## Quick Start
 1.  Clone this repo.
 2.  Install dependencies: `pip install -r requirements.txt`
 3.  Run `01_Baseline_EDA_and_Stats.ipynb` to initialize data.
