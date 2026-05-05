@@ -1,38 +1,18 @@
-# Monitoring Population Drift in Deployed Medical AI
-**Unsupervised Anomaly Detection for the Mitigation of "Silent Failures"**
+# Data Drift Detection in Healthcare: MSc Dissertation
 
-**Author:** Malik Adeel Anjum  
-**Project:** MSc AI for Healthcare Dissertation (University of Hull)  
-**Academic Year:** 2024-2025  
+<!-- Badges -->
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
----
+## 📋 Overview
 
-## 📊 Research Overview
-In clinical AI deployment, **Population Drift** occurs when patient demographics or clinical environments shift away from training data. This leads to "Silent Failures"—where models provide inaccurate predictions without warning. 
+This repository contains the code, data, and analysis for an MSc dissertation on **detecting and analyzing data drift in healthcare datasets**. The project explores two complementary approaches to drift detection:
 
-This repository explores the efficacy of **Isolation Forest (IF)** and **One-Class Support Vector Machines (OCSVM)** as unsupervised monitors to detect these shifts in real-time, focusing on two distinct drift archetypes:
-* **Gradual Multiplicative Drift:** Simulates slow biological or demographic changes (e.g., rising BMI/Age trends).
-* **Abrupt Affine Drift:** Simulates sudden "systemic shocks" (e.g., changes in hospital equipment calibration).
+- **One-Class SVM (OCSVM)** - A density-based anomaly detection method
+- **Isolation Forest (IsoForest)** - An ensemble-based outlier detection method
 
----
-
-## 📁 Repository Structure
-
-### 1. Pima Indians Diabetes Dataset (Core Comparison)
-*Located in the `/Pima/` folder. These notebooks establish fundamental performance trade-offs.*
-* **`01_Baseline_EDA.ipynb`**: Data cleaning, missingness analysis, and creation of the leak-free 70/30 temporal split.
-* **`02_Gradual_Drift_OCSVM.ipynb`**: Performance of distance-based detection on slow clinical shifts.
-* **`03_Gradual_Drift_IF.ipynb`**: Evaluating ensemble-based sensitivity to gradual covariate drift.
-* **`04_Abrupt_Drift_OCSVM.ipynb`**: Benchmarking OCSVM reactivity to sudden systemic shocks.
-* **`05_Abrupt_Drift_IF.ipynb`**: Testing Isolation Forest's response to abrupt distributional displacement.
-
-### 2. Frankfurt General Hospital Dataset (FHGD) (Sensitivity Validation)
-*Located in the `/FHGD/` folder. Advanced validation on high-dimensional clinical data.*
-* **`FHGD_IF_Gradual.ipynb`**: Validation of IF sensitivity to slow covariate deterioration across multiple clinical features.
-* **`abrupt_IF_FHGD.ipynb`**: Mechanistic study of Isolation Forest response to sudden affine remapping.
-* *(Includes additional data processing and validation notebooks within the FHGD directory)*.
-
----
+The dissertation evaluates these methods on both **gradual drift** and **abrupt drift** scenarios using two datasets: the Pima Indian Diabetes dataset and the Framingham Heart Study Heart Diseases (FGHD) dataset.
 
 ## 🔑 Key Research Findings: The "Detection Trade-off"
 The study reveals that no single algorithm is universally superior. A strategic choice is required based on the expected drift:
@@ -41,27 +21,231 @@ The study reveals that no single algorithm is universally superior. A strategic 
 | :--- | :--- | :--- |
 | **Gradual (Multi-factor)** | **Isolation Forest** | **4.40x** higher sensitivity than OCSVM |
 | **Abrupt (Systemic Shock)** | **One-Class SVM** | **2.92x** higher reactivity than IF |
+## 📁 Project Structure
+
+```
+.
+├── README.md                          # This file
+├── LICENSE                            # MIT License
+├── CITATION.cff                       # Citation metadata
+├── requirements.txt                   # Python dependencies
+├── setup.py                           # Package setup
+│
+├── data/
+│   ├── raw/                          # Original datasets (do not modify)
+│   │   ├── diabetes.csv              # Pima Indian Diabetes dataset
+│   │   └── README.md
+│   ├── processed/                    # Cleaned and processed data
+│   │   ├── pima_step1_clean.csv
+│   │   ├── pima_step2_imputed.csv
+│   │   ├── fhgd_step1_clean.csv
+│   │   └── fhgd_step2_imputed.csv
+│   └── .gitkeep
+│
+├── notebooks/                        # Jupyter notebooks (execution order)
+│   ├── 01_Baseline_EDA_and_Stats.ipynb
+│   ├── 02_Gradual_Drift_Experiment_OCSVM.ipynb
+│   ├── 03_Gradual_Drift_Experiment_IsoForest.ipynb
+│   ├── 04_Abrupt_Drift_Experiment_IsoForest.ipynb
+│   ├── 05_Abrupt_Drift_Experiment_OCSVM.ipynb
+│   ├── archive/                     # Earlier iterations (reference only)
+│   │   ├── FGHD_eda.ipynb
+│   │   ├── FGHD_IF_Gradual.ipynb
+│   │   └── ...
+│   └── reports/                     # Generated reports from notebooks
+│       └── drafts/
+│
+├── src/                             # Python package code
+│   ├── __init__.py
+│   ├── drift_detection/
+│   │   ├── __init__.py
+│   │   ├── ocsvm.py                # OCSVM implementation
+│   │   ├── isoforest.py            # Isolation Forest implementation
+│   │   └── utils.py                # Utility functions
+│   ├── data/
+│   │   ├── __init__.py
+│   │   ├── loaders.py              # Data loading functions
+│   │   └── preprocessors.py        # Data preprocessing pipeline
+│   └── evaluation/
+│       ├── __init__.py
+│       └── metrics.py              # Evaluation metrics
+│
+├── models/                          # Trained models
+│   ├── ocsvm_baseline.joblib
+│   ├── ocsvm_tuned.joblib
+│   └── README.md
+│
+├── docs/
+│   ├── manuscripts/                # Dissertation manuscripts
+│   │   ├── Population_Drift_Manuscript_FINAL.docx
+│   │   └── ...
+│   └── Drift_Detection_Presentation_Slides.pdf
+│
+├── scripts/                         # Utility scripts
+│   ├── setup_environment.sh         # Environment setup
+│   └── run_all_experiments.sh       # Run all experiments
+│
+└── .gitignore                       # Git ignore rules
+```
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8 or higher
+- pip or conda
+
+### Installation
+
+1. **Clone the repository:**
+```bash
+git clone https://github.com/MalikAdeel-Hull/MSc-Dissertation-Drift-Detection.git
+cd MSc-Dissertation-Drift-Detection
+```
+
+2. **Create and activate a virtual environment:**
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. **Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+4. **Install the package (optional, for development):**
+```bash
+pip install -e .
+```
+
+### Running the Experiments
+
+**To reproduce all results:**
+```bash
+bash scripts/run_all_experiments.sh
+```
+
+**To run notebooks individually:**
+Follow the numbered order:
+```bash
+jupyter notebook notebooks/01_Baseline_EDA_and_Stats.ipynb
+jupyter notebook notebooks/02_Gradual_Drift_Experiment_OCSVM.ipynb
+jupyter notebook notebooks/03_Gradual_Drift_Experiment_IsoForest.ipynb
+# ... and so on
+```
+
+## 📊 Datasets
+
+### Pima Indian Diabetes Dataset
+- **Source:** UCI Machine Learning Repository
+- **Size:** X samples, Y features
+- **Target:** Diabetes diagnosis (binary classification)
+- **Preprocessing:** Handles missing values, feature scaling applied
+
+### Framingham Heart Study Heart Diseases (FGHD)
+- **Source:** [Source URL]
+- **Size:** X samples, Y features
+- **Target:** Heart disease prediction
+- **Preprocessing:** [Describe preprocessing steps]
+
+See `data/raw/README.md` for detailed dataset information.
+
+## 🔬 Methodology
+
+### Approach 1: One-Class SVM (OCSVM)
+- Learns a boundary around normal data
+- Detects points outside this boundary as drift
+- Parameters: [mention key hyperparameters]
+
+### Approach 2: Isolation Forest (IsoForest)
+- Isolates anomalies using random trees
+- More computationally efficient than OCSVM
+- Parameters: [mention key hyperparameters]
+
+### Evaluation Metrics
+- Drift detection rate (sensitivity)
+- False positive rate (specificity)
+- Area under ROC curve (AUC)
+- [Other metrics you used]
+
+## 📈 Results
+
+### Summary of Key Findings
+| Metric | OCSVM | IsoForest |
+|--------|-------|-----------|
+| AUC (Gradual Drift) | X | Y |
+| AUC (Abrupt Drift) | X | Y |
+| Runtime (sec) | X | Y |
+
+For detailed results, see the generated reports in `notebooks/reports/` or the dissertation manuscript in `docs/manuscripts/`.
+
+## 📖 Documentation
+
+- **Full Dissertation:** See `docs/manuscripts/Population_Drift_Manuscript_FINAL.docx`
+- **Presentation Slides:** See `docs/Drift_Detection_Presentation_Slides.pdf`
+- **Detailed Analysis:** Check individual notebooks with results and visualizations
+
+## 🛠️ Development
+
+### Adding New Features
+1. Create a branch: `git checkout -b feature/your-feature`
+2. Make changes and commit: `git commit -am 'Add your feature'`
+3. Push to branch: `git push origin feature/your-feature`
+4. Submit a pull request
+
+See `CONTRIBUTING.md` for guidelines.
+
+### Code Quality
+This project uses:
+- **Black** for code formatting
+- **Pylint** for linting
+- **Pytest** for testing (when applicable)
+
+## 📝 Citation
+
+If you use this code in your research, please cite it as:
+
+```bibtex
+@misc{Adeel2026,
+  author = {Adeel, Malik},
+  title = {Data Drift Detection in Healthcare: An MSc Dissertation},
+  year = {2026},
+  howpublished = {\url{https://github.com/MalikAdeel-Hull/MSc-Dissertation-Drift-Detection}},
+  note = {MSc Dissertation, University of Hull}
+}
+```
+
+Or use the CITATION.cff file for automated citation generation.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the `LICENSE` file for details.
+
+## ✍️ Author
+
+**Malik Adeel**
+- Email: malikanjum.adeel@gmail.com
+- University: University of Hull
+
+## 🙏 Acknowledgments
+
+- Supervisors and advisors
+- Dataset sources
+- Open-source libraries used (scikit-learn, pandas, matplotlib, etc.)
+
+## 🔗 Resources
+
+- [Scikit-learn Documentation](https://scikit-learn.org/)
+- [Pandas Documentation](https://pandas.pydata.org/)
+- [Jupyter Notebooks Guide](https://jupyter.org/)
+
+## 🐛 Issues & Questions
+
+Please file issues for bugs or feature requests on the [GitHub Issues page](https://github.com/MalikAdeel-Hull/MSc-Dissertation-Drift-Detection/issues).
+
+For questions about the research, please contact the author directly.
 
 ---
 
-## 🔬 Methodology Highlights
-* **Leak-Free Pipeline:** Preprocessing parameters (Imputation/Scaling) are fit *exclusively* on the baseline to ensure rigorous validation.
-* **Statistical Validation:** Detection signals are verified using **Two-sample Kolmogorov-Smirnov (K-S) tests** ($p < 0.05$).
-* **Explainability:** Integrated **SHAP (SHapley Additive exPlanations)** to identify which clinical features drive the drift signal.
-
----
-
-## 🚀 Getting Started
-1. **Clone the Repository**:
-   ```bash
-   git clone [https://github.com/MalikAdeel-Hull/medical-ai-drift.git](https://github.com/MalikAdeel-Hull/medical-ai-drift.git)
-   cd medical-ai-drift
-   
-## 🛠 Reproduction Guide
-To reproduce the findings presented in the paper:
-1. **Environment Setup**: 
-   `pip install -r requirements.txt`
-2. **Execute Pipeline**:
-   - Open `/Pima/01_Baseline_EDA.ipynb` to generate the 70/30 chronological split.
-   - Run the corresponding `Drift` notebooks to generate Detection Ratios.
-   - Run `SHAP_Validation.ipynb` to verify feature importance.
+**Last Updated:** May 2026  
+**Status:** Completed (MSc Dissertation)
