@@ -24,7 +24,7 @@ The study reveals that no single algorithm is universally superior. A strategic 
 
 ## 📁 Project Structure
 
-## 📊 Project Structure
+
 
 ### Notebooks Organization
 
@@ -76,7 +76,6 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### Running the Experiments
 
 ### Running the Experiments
 
