@@ -8,14 +8,15 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-# Add src to path - go up one level from tests/
-sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
+# Add src to path
+sys.path.insert(0, str(Path(__file__).parent / 'src'))
 
 from drift_detection import (
     load_raw_data,
     create_missingness_flags,
     temporal_train_test_split,
     identify_feature_types,
+    PIMA_FEATURES,
     PIMA_COLS_WITH_MISSING,
     PreprocessingPipeline,
     fit_ocsvm,
@@ -140,15 +141,15 @@ def test_abrupt_drift_multivariate():
     print(f"\nBaseline outlier rate (IForest): {baseline_rate:.4f}")
 
     # Compute baseline stats for 4 features
-    drift_features = ['Glucose', 'BMI', 'BloodPressure', 'Insulin']
-    X_base_stats = compute_baseline_stats(X_base_raw, drift_features)
-    print(f"Baseline stats for {len(drift_features)} features computed")
+    features = ['Glucose', 'BMI', 'BloodPressure', 'Insulin']
+    X_base_stats = compute_baseline_stats(X_base_raw, features)
+    print(f"Baseline stats for {len(features)} features computed")
 
     # Apply abrupt drift to all 4 features
     X_test_drifted_raw = apply_minmax_drift(
         X_test_raw,
         X_base_stats,
-        features=drift_features,
+        features=features,
         shift_f=0.4,
         range_f=1.5,
         verbose=True
@@ -169,11 +170,11 @@ def test_abrupt_drift_multivariate():
     assert X_test_drifted_raw.shape == X_test_raw.shape, "Shape mismatch"
 
     # Check that all features were drifted
-    for feature in drift_features:
+    for feature in features:
         orig_mean = X_test_raw[feature].mean()
         drift_mean = X_test_drifted_raw[feature].mean()
         mean_change = abs(drift_mean - orig_mean) / orig_mean * 100
-        print(f"  {feature}: {orig_mean:.2f} to {drift_mean:.2f} (change: {mean_change:+.1f}%)")
+        print(f"  {feature}: {orig_mean:.2f} → {drift_mean:.2f} ({mean_change:+.1f}%)")
         assert mean_change > 5, f"{feature} should show significant change"
 
     print("✓ Test 2 PASSED")
@@ -215,8 +216,8 @@ def test_nan_preservation():
     drift_nans = X_test_drifted_raw.isnull().sum()
 
     # Check NaNs preserved
-    assert (orig_nans == drift_nans).all(), "NaN counts do not match"
-    print(f"NaNs in Glucose: {orig_nans['Glucose']} to {drift_nans['Glucose']} (preserved) ✓")
+    assert (orig_nans == drift_nans).all(), "NaN counts don't match"
+    print(f"NaNs in Glucose: {orig_nans['Glucose']} → {drift_nans['Glucose']} ✓")
 
     print("✓ Test 3 PASSED")
     return True
@@ -245,8 +246,8 @@ def test_clinical_range_clipping():
         X_test_raw,
         X_base_stats,
         features=['Glucose', 'BMI'],
-        shift_f=0.8,
-        range_f=3.0,
+        shift_f=0.8,      # Aggressive shift
+        range_f=3.0,      # Large expansion
         feature_ranges=DEFAULT_CLINICAL_RANGES,
         verbose=True
     )
@@ -263,8 +264,8 @@ def test_clinical_range_clipping():
     assert bmi_vals.min() >= bmi_min, "BMI below minimum"
     assert bmi_vals.max() <= bmi_max, "BMI above maximum"
 
-    print(f"\nGlucose range: [{glucose_vals.min():.1f}, {glucose_vals.max():.1f}] (OK) ✓")
-    print(f"BMI range: [{bmi_vals.min():.1f}, {bmi_vals.max():.1f}] (OK) ✓")
+    print(f"\nGlucose range: [{glucose_vals.min():.1f}, {glucose_vals.max():.1f}] ✓")
+    print(f"BMI range: [{bmi_vals.min():.1f}, {bmi_vals.max():.1f}] ✓")
 
     print("✓ Test 4 PASSED")
     return True
@@ -341,7 +342,7 @@ def test_comparison_gradual_vs_abrupt():
 
     # Verify both detect drift
     assert gradual_ocsvm_ratio > 1.5, "Gradual drift not detected by OCSVM"
-    assert gradual_iforest_ratio > 1.0, "Gradual drift not detected by IF"
+    assert gradual_iforest_ratio > 1.5, "Gradual drift not detected by IF"
     assert abrupt_ocsvm_ratio > 1.2, "Abrupt drift not detected by OCSVM"
     assert abrupt_iforest_ratio > 1.0, "Abrupt drift not detected by IF"
 
@@ -368,7 +369,7 @@ def main():
         return True
 
     except Exception as e:
-        print(f"\nTEST FAILED: {e}")
+        print(f"\n❌ TEST FAILED: {e}")
         import traceback
         traceback.print_exc()
         return False
