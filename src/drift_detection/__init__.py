@@ -62,6 +62,7 @@ from .algorithms import (
 from .evaluation import (
     calculate_outlier_rate,
     calculate_detection_ratio,
+    bootstrap_detection_ratio_ci,
     validate_with_ks_test,
     validate_multiple_features,
     check_monotonicity,
@@ -105,6 +106,7 @@ __all__ = [
     # evaluation.py
     'calculate_outlier_rate',
     'calculate_detection_ratio',
+    'bootstrap_detection_ratio_ci',
     'validate_with_ks_test',
     'validate_multiple_features',
     'check_monotonicity',

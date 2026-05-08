@@ -13,3 +13,10 @@ src/drift_detection.egg-info/SOURCES.txt
 src/drift_detection.egg-info/dependency_links.txt
 src/drift_detection.egg-info/requires.txt
 src/drift_detection.egg-info/top_level.txt
+tests/test_abrupt_drift.py
+tests/test_abrupt_drift_final.py
+tests/test_abrupt_drift_v2.py
+tests/test_bootstrap_ci.py
+tests/test_modules.py
+tests/test_simple.py
+tests/test_simple_working.py
